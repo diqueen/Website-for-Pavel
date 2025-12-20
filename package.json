@@ -1,0 +1,36 @@
+{
+  "name": "marine-website",
+  "version": "1.0.0",
+  "description": "Многостраничный сайт для компании морской тематики",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "admin"
+  ],
+  "scripts": {
+    "dev": "npm run setup && concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "setup": "npm run install:all",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "start": "npm run dev",
+    "check": "npm run check:frontend && npm run check:backend",
+    "check:frontend": "cd frontend && npm run build",
+    "check:backend": "cd backend && node -c src/index.js"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "marine",
+    "website",
+    "catalog",
+    "services"
+  ],
+  "author": "Pavel Marine Company",
+  "license": "MIT"
+}
