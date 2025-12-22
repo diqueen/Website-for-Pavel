@@ -187,7 +187,8 @@ interface ProductsPageProps {
   categoryFilter?: string
 }
 
-const ProductsPage: React.FC<ProductsPageProps> = ({ categoryFilter }) => {
+function ProductsPage(props?: ProductsPageProps) {
+  const { categoryFilter } = props || {}
   const pathname = usePathname()
   const { settings } = useSiteSettings()
   const [products, setProducts] = useState<Product[]>([])
@@ -911,4 +912,4 @@ const ProductsPage: React.FC<ProductsPageProps> = ({ categoryFilter }) => {
   )
 }
 
-export default memo(ProductsPage)
+export default memo(ProductsPage) as any
