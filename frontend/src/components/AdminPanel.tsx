@@ -156,7 +156,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [error, setError] = useState('')
   const [showExcelUpload, setShowExcelUpload] = useState(false)
   const [excelPreview, setExcelPreview] = useState(null)
-  const [excelFile, setExcelFile] = useState(null)
+  const [excelFile, setExcelFile] = useState<File | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [editingService, setEditingService] = useState<Service | null>(null)
