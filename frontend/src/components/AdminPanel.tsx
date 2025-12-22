@@ -74,6 +74,15 @@ interface DashboardStats {
   totalValue: number
 }
 
+interface ExcelPreview {
+  sheetsProcessed?: number
+  totalProducts?: number
+  totalCategories?: number
+  totalSubcategories?: number
+  inStock?: number
+  outOfStock?: number
+}
+
 interface SiteSettings {
   company?: {
     name: string
@@ -155,7 +164,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showExcelUpload, setShowExcelUpload] = useState(false)
-  const [excelPreview, setExcelPreview] = useState(null)
+  const [excelPreview, setExcelPreview] = useState<ExcelPreview | null>(null)
   const [excelFile, setExcelFile] = useState<File | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
