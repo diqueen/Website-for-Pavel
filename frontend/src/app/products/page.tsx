@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, memo, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, memo, useMemo, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
@@ -187,7 +187,7 @@ interface ProductsPageProps {
   categoryFilter?: string
 }
 
-const ProductsPage = ({ categoryFilter }: ProductsPageProps = {}) => {
+const ProductsPage: React.FC<ProductsPageProps> = ({ categoryFilter }) => {
   const pathname = usePathname()
   const { settings } = useSiteSettings()
   const [products, setProducts] = useState<Product[]>([])
