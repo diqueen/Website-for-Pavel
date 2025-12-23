@@ -81,6 +81,7 @@ interface ExcelPreview {
   totalSubcategories?: number
   inStock?: number
   outOfStock?: number
+  products?: any[]
 }
 
 interface SiteSettings {
