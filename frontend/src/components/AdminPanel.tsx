@@ -3399,9 +3399,9 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                       ))}
                     </tbody>
                   </table>
-                  {excelPreview.products?.length > 50 && (
+                  {(excelPreview.products?.length ?? 0) > 50 && (
                     <p className="mt-2 text-sm text-gray-500 text-center">
-                      Показано 50 из {excelPreview.products.length} товаров
+                      Показано 50 из {excelPreview.products?.length ?? 0} товаров
                     </p>
                   )}
                 </div>
