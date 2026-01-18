@@ -49,7 +49,7 @@ const Header = () => {
 
   const menuItems = [
     { name: 'Главная', href: '/' },
-    { name: 'Все товары', href: '/products' },
+    { name: 'Каталог', href: '/products' },
     { name: 'Судовые запчасти', href: '/products/ship-parts' },
     { name: 'Арматура', href: '/products/fittings' },
     { name: 'Теплообменники', href: '/products/heat-exchangers' },

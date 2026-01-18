@@ -49,9 +49,105 @@ react/
 
 ### Шаг 1: Подключение к серверу
 
-```bash
-ssh username@your-server-ip
+**IP адрес сервера:** `31.192.110.68`
+
+### 🔍 Как узнать имя пользователя на сервере?
+
+Имя пользователя обычно предоставляется провайдером сервера. Вот несколько способов его узнать:
+
+1. **Проверьте email от провайдера** - обычно там указаны данные для доступа
+2. **Проверьте панель управления VPS** (если есть доступ):
+   - Timeweb, Selectel, DigitalOcean, AWS и т.д.
+   - Обычно в разделе "Доступ" или "SSH ключи"
+3. **Стандартные имена пользователей** (попробуйте по очереди):
+   - `root` - для серверов с полным доступом
+   - `ubuntu` - для Ubuntu серверов
+   - `admin` - часто используется
+   - `user` - стандартное имя
+   - `debian` - для Debian серверов
+   - `centos` - для CentOS серверов
+4. **Если сервер только что создан** - имя пользователя обычно указано в инструкции провайдера
+
+#### На Windows (PowerShell):
+
+```powershell
+# Если у вас есть имя пользователя и пароль
+ssh username@31.192.110.68
+
+# Если нужно указать порт (по умолчанию 22)
+ssh -p 22 username@31.192.110.68
 ```
+
+#### Альтернативные способы подключения:
+
+1. **Через PuTTY** (если SSH не установлен):
+   - Скачайте PuTTY: https://www.putty.org/
+   - Host Name: `31.192.110.68`
+   - Port: `22`
+   - Connection type: `SSH`
+   - Нажмите "Open"
+
+2. **Через WinSCP** (для передачи файлов):
+   - Скачайте WinSCP: https://winscp.net/
+   - Host name: `31.192.110.68`
+   - Port: `22`
+   - Username: ваш username
+   - Password: ваш пароль
+
+**Примечание:** Замените `username` на ваше реальное имя пользователя на сервере.
+
+### 🔑 Если вы подключились как ROOT
+
+Если вы подключились как `root` (видите `root@...` в командной строке), у вас нет директории `/home/username`. 
+
+**Рекомендуемые варианты размещения проекта:**
+
+#### Вариант 1: В домашней директории root (проще всего)
+
+```bash
+# Вы уже находитесь в /root, проверьте текущую директорию
+pwd  # Должно показать /root
+
+# Создайте папку для проектов
+mkdir -p /root/projects
+cd /root/projects
+
+# Клонируйте репозиторий
+git clone your-repository-url
+cd react  # или имя вашей папки проекта
+```
+
+#### Вариант 2: В стандартной директории для веб-проектов (рекомендуется)
+
+```bash
+# Создайте директорию для веб-проектов
+mkdir -p /var/www
+cd /var/www
+
+# Клонируйте репозиторий
+git clone your-repository-url
+cd react  # или имя вашей папки проекта
+
+# Установите правильные права доступа
+chown -R root:root /var/www/react
+```
+
+#### Вариант 3: В директории /opt (для приложений)
+
+```bash
+# Создайте директорию
+mkdir -p /opt/website
+cd /opt/website
+
+# Клонируйте репозиторий
+git clone your-repository-url
+cd react  # или имя вашей папки проекта
+```
+
+**Важно:** В дальнейших инструкциях замените `/home/username/react` на выбранный вами путь:
+- `/root/projects/react` (если выбрали вариант 1)
+- `/var/www/react` (если выбрали вариант 2)
+- `/opt/website/react` (если выбрали вариант 3)
 
 ### Шаг 2: Установка Node.js
 
@@ -73,18 +169,44 @@ npm --version   # Должно быть 8.x или выше
 #### Вариант A: Через SCP (если файлы на локальной машине)
 
 ```bash
-# С локальной машины
-scp -r react username@your-server-ip:/home/username/
+# С локальной машины (Windows PowerShell)
+# Если вы root:
+scp -r react root@31.192.110.68:/root/projects/
+# или
+scp -r react root@31.192.110.68:/var/www/
+
+# Если у вас другой пользователь:
+scp -r react username@31.192.110.68:/home/username/
 ```
 
 #### Вариант B: Через Git (рекомендуется)
 
 ```bash
-# На сервере
+# На сервере (если вы root)
+# Выберите один из вариантов:
+
+# Вариант 1: В /root/projects
+cd /root
+mkdir -p projects
+cd projects
+git clone your-repository-url
+cd react  # или имя вашей папки проекта
+
+# Вариант 2: В /var/www (рекомендуется)
+cd /var/www
+git clone your-repository-url
+cd react  # или имя вашей папки проекта
+
+# Если у вас другой пользователь:
 cd /home/username
 git clone your-repository-url
 cd react
 ```
+
+**Где взять URL репозитория?**
+- Если репозиторий на GitHub: `https://github.com/username/repository-name.git`
+- Если репозиторий на GitLab: `https://gitlab.com/username/repository-name.git`
+- Если репозиторий приватный, вам понадобится токен доступа или SSH ключ
 
 #### Вариант C: Через FTP/SFTP клиент
 
@@ -94,6 +216,12 @@ cd react
 
 ```bash
 # Переход в папку проекта
+# ЗАМЕНИТЕ путь на ваш реальный путь!
+# Если вы root и выбрали /root/projects:
+cd /root/projects/react
+# Если вы root и выбрали /var/www:
+cd /var/www/react
+# Если у вас другой пользователь:
 cd /home/username/react
 
 # Установка зависимостей backend
@@ -110,7 +238,14 @@ npm install
 #### Backend (.env)
 
 ```bash
+# ЗАМЕНИТЕ путь на ваш реальный путь!
+# Если вы root и выбрали /root/projects:
+cd /root/projects/react/backend
+# Если вы root и выбрали /var/www:
+cd /var/www/react/backend
+# Если у вас другой пользователь:
 cd /home/username/react/backend
+
 cp env.example .env
 nano .env
 ```
@@ -123,17 +258,11 @@ PORT=5000
 NODE_ENV=production
 
 # Frontend URL (замените на ваш домен)
-FRONTEND_URL=https://yourdomain.com
-
-# Email Configuration
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASS=your-app-password
+FRONTEND_URL=http://31.192.110.68:3000
 
 # Admin Configuration
-ADMIN_EMAIL=admin@yourdomain.com
-ADMIN_PASSWORD=your-secure-password
+ADMIN_EMAIL=admin@31.192.110.68
+ADMIN_PASSWORD=looppi7980
 
 # Rate Limiting
 RATE_LIMIT_WINDOW_MS=900000
@@ -143,7 +272,14 @@ RATE_LIMIT_MAX_REQUESTS=100
 #### Frontend (.env.local)
 
 ```bash
+# ЗАМЕНИТЕ путь на ваш реальный путь!
+# Если вы root и выбрали /root/projects:
+cd /root/projects/react/frontend
+# Если вы root и выбрали /var/www:
+cd /var/www/react/frontend
+# Если у вас другой пользователь:
 cd /home/username/react/frontend
+
 cp env.example .env.local
 nano .env.local
 ```
@@ -151,20 +287,25 @@ nano .env.local
 Настройте следующие переменные:
 
 ```env
-# API Configuration (замените на ваш домен или IP)
-NEXT_PUBLIC_API_URL=https://yourdomain.com:5000
-# или
-NEXT_PUBLIC_API_URL=http://your-server-ip:5000
+# API Configuration
+NEXT_PUBLIC_API_URL=http://31.192.110.68:5000
 
 # Contact Form Configuration
-NEXT_PUBLIC_CONTACT_EMAIL=info@yourdomain.com
-NEXT_PUBLIC_PHONE_NUMBER=+7 (999) 123-45-67
+NEXT_PUBLIC_CONTACT_EMAIL=test@gmail.com
+NEXT_PUBLIC_PHONE_NUMBER=+7 (914) 349-10-50
 ```
 
 ### Шаг 6: Создание папки для загрузок
 
 ```bash
+# ЗАМЕНИТЕ путь на ваш реальный путь!
+# Если вы root и выбрали /root/projects:
+cd /root/projects/react/backend
+# Если вы root и выбрали /var/www:
+cd /var/www/react/backend
+# Если у вас другой пользователь:
 cd /home/username/react/backend
+
 mkdir -p uploads/images
 chmod -R 755 uploads
 ```
@@ -172,7 +313,14 @@ chmod -R 755 uploads
 ### Шаг 7: Сборка frontend
 
 ```bash
+# ЗАМЕНИТЕ путь на ваш реальный путь!
+# Если вы root и выбрали /root/projects:
+cd /root/projects/react/frontend
+# Если вы root и выбрали /var/www:
+cd /var/www/react/frontend
+# Если у вас другой пользователь:
 cd /home/username/react/frontend
+
 npm run build
 ```
 
@@ -183,11 +331,25 @@ npm run build
 sudo npm install -g pm2
 
 # Запуск backend через PM2
+# ЗАМЕНИТЕ путь на ваш реальный путь!
+# Если вы root и выбрали /root/projects:
+cd /root/projects/react/backend
+# Если вы root и выбрали /var/www:
+cd /var/www/react/backend
+# Если у вас другой пользователь:
 cd /home/username/react/backend
+
 pm2 start src/index.js --name "marine-backend"
 
 # Запуск frontend через PM2
+# ЗАМЕНИТЕ путь на ваш реальный путь!
+# Если вы root и выбрали /root/projects:
+cd /root/projects/react/frontend
+# Если вы root и выбрали /var/www:
+cd /var/www/react/frontend
+# Если у вас другой пользователь:
 cd /home/username/react/frontend
+
 pm2 start npm --name "marine-frontend" -- start
 
 # Сохранение конфигурации PM2
@@ -476,4 +638,5 @@ curl http://localhost:3000
 ---
 
 **Успешного развертывания! 🚀**
+
 

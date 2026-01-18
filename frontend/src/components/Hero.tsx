@@ -84,104 +84,6 @@ const Hero = ({ onContactClick }: HeroProps) => {
         <Waves className="w-24 h-24" />
       </motion.div>
 
-      {/* Анимированные стикеры морской тематики на фоне */}
-      <motion.div
-        className="absolute top-10 right-20 text-6xl opacity-40"
-        animate={{ 
-          y: [0, -30, 0],
-          rotate: [0, 10, -10, 0]
-        }}
-        transition={{ 
-          duration: 15, 
-          repeat: Infinity, 
-          ease: "easeInOut" 
-        }}
-      >
-        🐟
-      </motion.div>
-
-      <motion.div
-        className="absolute top-32 left-20 text-5xl opacity-35"
-        animate={{ 
-          x: [0, 25, 0],
-          rotate: [0, -15, 15, 0]
-        }}
-        transition={{ 
-          duration: 18, 
-          repeat: Infinity, 
-          ease: "easeInOut",
-          delay: 2
-        }}
-      >
-        🦀
-      </motion.div>
-
-      <motion.div
-        className="absolute top-1/3 right-1/3 text-4xl opacity-40"
-        animate={{ 
-          y: [0, -20, 0],
-          x: [0, 15, 0],
-          rotate: [0, 5, -5, 0]
-        }}
-        transition={{ 
-          duration: 12, 
-          repeat: Infinity, 
-          ease: "easeInOut",
-          delay: 1
-        }}
-      >
-        🐚
-      </motion.div>
-
-      <motion.div
-        className="absolute bottom-1/3 left-1/4 text-5xl opacity-35"
-        animate={{ 
-          x: [0, -20, 0],
-          y: [0, 15, 0],
-          rotate: [0, -10, 10, 0]
-        }}
-        transition={{ 
-          duration: 20, 
-          repeat: Infinity, 
-          ease: "easeInOut",
-          delay: 3
-        }}
-      >
-        🌊
-      </motion.div>
-
-      <motion.div
-        className="absolute top-1/2 right-1/4 text-6xl opacity-40"
-        animate={{ 
-          y: [0, 25, 0],
-          rotate: [0, 8, -8, 0]
-        }}
-        transition={{ 
-          duration: 14, 
-          repeat: Infinity, 
-          ease: "easeInOut",
-          delay: 1.5
-        }}
-      >
-        ⚓
-      </motion.div>
-
-      <motion.div
-        className="absolute bottom-1/4 right-10 text-4xl opacity-35"
-        animate={{ 
-          x: [0, 20, 0],
-          rotate: [0, -12, 12, 0]
-        }}
-        transition={{ 
-          duration: 16, 
-          repeat: Infinity, 
-          ease: "easeInOut",
-          delay: 2.5
-        }}
-      >
-        🐙
-      </motion.div>
-
       {/* Основной контент */}
       <div className="section-container relative z-10">
         <div className="text-center max-w-5xl mx-auto">
@@ -206,16 +108,16 @@ const Hero = ({ onContactClick }: HeroProps) => {
           </motion.p>
           )}
 
-          {/* Кнопка сотрудничества */}
+          {/* Кнопка каталога */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             className="mb-8"
           >
-            <Link href="/cooperation">
+            <Link href="/products">
               <button className="marine-button-secondary text-lg flex items-center space-x-2 group mx-auto">
-                <span>Сотрудничество</span>
+                <span>Каталог</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
             </Link>

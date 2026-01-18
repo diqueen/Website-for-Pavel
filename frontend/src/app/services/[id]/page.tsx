@@ -189,7 +189,7 @@ export default function ServicePage() {
               <div className="bg-emerald-50 rounded-xl p-6">
                 {service.price && (
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-lg text-gray-700 font-medium">Стоимость:</span>
+                    <span className="text-lg text-gray-700 font-medium">Цена:</span>
                     <span className="text-2xl font-bold text-gray-900">
                       {service.price} ₽
                     </span>
@@ -212,24 +212,16 @@ export default function ServicePage() {
                 </p>
               </div>
 
-              {/* Кнопки действий */}
-              <div className="flex gap-4 pt-4">
+              {/* Кнопка действия */}
+              <div className="pt-4">
                 <button 
-                  className="flex-1 flex items-center justify-center gap-2 bg-emerald-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-emerald-700 transition-colors"
-                  onClick={() => {
-                    alert(`Заявка на услугу "${service.name}" отправлена!`)
-                  }}
-                >
-                  <CheckCircle className="w-5 h-5" />
-                  <span>Оформить заявку</span>
-                </button>
-                <button 
-                  className="px-6 py-4 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 bg-green-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-green-700 transition-colors"
                   onClick={() => {
                     alert(`Запрос на услугу "${service.name}" отправлен!`)
                   }}
                 >
-                  Запросить консультацию
+                  <CheckCircle className="w-5 h-5" />
+                  <span>Запросить консультацию</span>
                 </button>
               </div>
             </motion.div>

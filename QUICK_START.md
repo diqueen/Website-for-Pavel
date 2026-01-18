@@ -65,3 +65,4 @@ pm2 start "npm --prefix frontend start" --name "marine-frontend"
 
 **Готово к развертыванию! 🎉**
 
+

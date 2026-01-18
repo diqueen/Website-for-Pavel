@@ -488,71 +488,6 @@ function ProductsPage(props?: ProductsPageProps) {
       
       {/* Hero секция */}
       <section className="bg-gradient-to-br from-sky-600 to-blue-700 text-white py-20 pt-40 relative overflow-hidden">
-        {/* Морские стикеры */}
-        <motion.div
-          className="absolute top-10 right-20 text-5xl opacity-30"
-          animate={{ 
-            y: [0, -30, 0],
-            rotate: [0, 10, -10, 0]
-          }}
-          transition={{ 
-            duration: 15, 
-            repeat: Infinity, 
-            ease: "easeInOut" 
-          }}
-        >
-          🐟
-        </motion.div>
-
-        <motion.div
-          className="absolute top-32 left-20 text-4xl opacity-25"
-          animate={{ 
-            x: [0, 25, 0],
-            rotate: [0, -15, 15, 0]
-          }}
-          transition={{ 
-            duration: 18, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 2
-          }}
-        >
-          🦀
-        </motion.div>
-
-        <motion.div
-          className="absolute bottom-10 right-1/4 text-5xl opacity-30"
-          animate={{ 
-            y: [0, 25, 0],
-            rotate: [0, 8, -8, 0]
-          }}
-          transition={{ 
-            duration: 14, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 1.5
-          }}
-        >
-          ⚓
-        </motion.div>
-
-        <motion.div
-          className="absolute bottom-20 left-10 text-4xl opacity-25"
-          animate={{ 
-            x: [0, -20, 0],
-            y: [0, 15, 0],
-            rotate: [0, -10, 10, 0]
-          }}
-          transition={{ 
-            duration: 20, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 3
-          }}
-        >
-          🌊
-        </motion.div>
-
         <div className="container-custom relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -780,7 +715,7 @@ function ProductsPage(props?: ProductsPageProps) {
             
             {/* Пагинация */}
             {totalPages > 1 && (
-              <div className="mt-12 flex justify-center items-center gap-2">
+              <div className="mt-12 flex justify-center items-center gap-4">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
@@ -793,7 +728,7 @@ function ProductsPage(props?: ProductsPageProps) {
                   Назад
                 </button>
                 
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
                     let pageNum: number
                     if (totalPages <= 7) {
@@ -822,7 +757,7 @@ function ProductsPage(props?: ProductsPageProps) {
                   })}
                 </div>
                 
-                      <button 
+                <button 
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                   className={`px-4 py-2 rounded-lg transition-colors ${
@@ -832,8 +767,8 @@ function ProductsPage(props?: ProductsPageProps) {
                   }`}
                 >
                   Вперед
-                      </button>
-                    </div>
+                </button>
+              </div>
             )}
             
             <div className="mt-4 text-center text-gray-600 text-sm">

@@ -105,3 +105,4 @@ echo 4. Следуйте инструкциям в DEPLOYMENT.md
 echo.
 pause
 
+

@@ -118,71 +118,6 @@ const ServicesPage = () => {
       
       {/* Hero секция */}
       <section className="bg-gradient-to-br from-teal-600 to-teal-700 text-white py-20 pt-40 relative overflow-hidden">
-        {/* Морские стикеры */}
-        <motion.div
-          className="absolute top-10 right-20 text-5xl opacity-30"
-          animate={{ 
-            y: [0, -30, 0],
-            rotate: [0, 10, -10, 0]
-          }}
-          transition={{ 
-            duration: 15, 
-            repeat: Infinity, 
-            ease: "easeInOut" 
-          }}
-        >
-          🐚
-        </motion.div>
-
-        <motion.div
-          className="absolute top-32 left-20 text-4xl opacity-25"
-          animate={{ 
-            x: [0, 25, 0],
-            rotate: [0, -15, 15, 0]
-          }}
-          transition={{ 
-            duration: 18, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 2
-          }}
-        >
-          🐙
-        </motion.div>
-
-        <motion.div
-          className="absolute bottom-10 right-1/4 text-5xl opacity-30"
-          animate={{ 
-            y: [0, 25, 0],
-            rotate: [0, 8, -8, 0]
-          }}
-          transition={{ 
-            duration: 14, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 1.5
-          }}
-        >
-          🌊
-        </motion.div>
-
-        <motion.div
-          className="absolute bottom-20 left-10 text-4xl opacity-25"
-          animate={{ 
-            x: [0, -20, 0],
-            y: [0, 15, 0],
-            rotate: [0, -10, 10, 0]
-          }}
-          transition={{ 
-            duration: 20, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 3
-          }}
-        >
-          ⚓
-        </motion.div>
-
         <div className="container-custom relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -286,7 +221,7 @@ const ServicesPage = () => {
                     {service.price && (
                       <div className="flex items-center justify-between">
                         <div className="flex items-center text-gray-600">
-                          <span className="font-medium">Стоимость:</span>
+                          <span className="font-medium">Цена:</span>
                         </div>
                         <span className="text-gray-800 font-semibold text-lg">
                           {service.price} ₽
