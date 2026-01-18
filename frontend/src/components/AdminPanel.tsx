@@ -1597,7 +1597,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 font-medium">{product.quantity} {product.unit}</td>
                                   <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.name}</td>
                                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{product.category}</td>
-                                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{product.price} ₽</td>
+                                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">{product.price}</td>
                                   <td className="px-4 py-4 whitespace-nowrap">
                                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                                       product.inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
@@ -1670,13 +1670,14 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                               
                               <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                  Цена (₽)
+                                  Цена
                                 </label>
                                 <input
                                   type="text"
                                   value={editingProduct.price}
                                   onChange={(e) => setEditingProduct({...editingProduct, price: e.target.value})}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                                  placeholder="Например: 1000 ₽ или договорная"
                                 />
                               </div>
                               
@@ -2126,7 +2127,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                     </div>
                                   </td>
                                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{service.name}</td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{service.price} ₽</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{service.price}</td>
                                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{service.executionTime || '-'}</td>
                                 </tr>
                               ))
@@ -2204,7 +2205,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                       value={editingService.price}
                                       onChange={(e) => setEditingService({...editingService, price: e.target.value})}
                                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
-                                      placeholder="0"
+                                      placeholder="Например: 5000 ₽ или договорная"
                                     />
                                   </div>
 
@@ -3385,7 +3386,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                           <td className="px-4 py-2 text-sm text-gray-900">{product.name}</td>
                           <td className="px-4 py-2 text-sm text-gray-500">{product.category}</td>
                           <td className="px-4 py-2 text-sm text-gray-500">{product.subcategory || '-'}</td>
-                          <td className="px-4 py-2 text-sm text-gray-500">{product.price} ₽</td>
+                          <td className="px-4 py-2 text-sm text-gray-500">{product.price}</td>
                           <td className="px-4 py-2 text-sm text-gray-500">{product.quantity} {product.unit}</td>
                           <td className="px-4 py-2 text-sm">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${

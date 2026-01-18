@@ -170,13 +170,13 @@ const ServicesPage = () => {
           ) : services.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
-              <motion.div
-                key={service.id}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3 }}
-                  className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl border-2 border-transparent hover:border-teal-500 transition-all duration-300"
+              <Link href={`/services/${service.id}`} key={service.id}>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl border-2 border-transparent hover:border-teal-500 transition-all duration-300 cursor-pointer"
                 >
                   {/* Фото услуги */}
                   {service.image ? (
@@ -194,11 +194,9 @@ const ServicesPage = () => {
                   )}
 
                   {/* Название услуги */}
-                  <Link href={`/services/${service.id}`}>
-                    <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center hover:text-emerald-600 transition-colors cursor-pointer">
-                      {service.name}
-                    </h3>
-                  </Link>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center hover:text-emerald-600 transition-colors">
+                    {service.name}
+                  </h3>
 
                   {/* Описание */}
                   <p className="text-gray-600 text-lg leading-relaxed mb-6 text-center">
@@ -224,16 +222,15 @@ const ServicesPage = () => {
                           <span className="font-medium">Цена:</span>
                         </div>
                         <span className="text-gray-800 font-semibold text-lg">
-                          {service.price} ₽
+                          {service.price}
                         </span>
                       </div>
                     )}
                   </div>
 
-
                   {/* Кнопка оформления */}
                   <div className="text-center">
-                    <button 
+                    <div 
                       className={`w-full text-white font-semibold py-3 px-6 rounded-xl transition-colors duration-300 text-lg ${
                         colors.primary === 'blue' ? 'bg-blue-600 hover:bg-blue-700' :
                         colors.primary === 'sky' ? 'bg-sky-600 hover:bg-sky-700' :
@@ -241,15 +238,13 @@ const ServicesPage = () => {
                         colors.primary === 'indigo' ? 'bg-indigo-600 hover:bg-indigo-700' :
                         'bg-blue-600 hover:bg-blue-700'
                       }`}
-                      onClick={() => {
-                        router.push(`/services/${service.id}`)
-                      }}
                     >
                       Оформить заказ
-                    </button>
+                    </div>
                   </div>
                 </motion.div>
-              ))}
+              </Link>
+            ))}
             </div>
           ) : (
             <div className="text-center">
