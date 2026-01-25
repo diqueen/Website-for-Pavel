@@ -95,7 +95,7 @@ export default function ProductPage() {
         <div className="bg-white shadow-sm">
           <Header />
         </div>
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center justify-center min-h-screen pt-24">
           <div className="text-center">
             <div className="flex flex-col items-center">
               <div className="wave-loader h-12 mb-4">
@@ -121,7 +121,7 @@ export default function ProductPage() {
         <div className="bg-white shadow-sm">
           <Header />
         </div>
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center justify-center min-h-screen pt-24">
           <div className="text-center">
             <div className="text-6xl mb-4">📦</div>
             <h1 className="text-2xl font-bold text-gray-800 mb-4">Товар не найден</h1>
@@ -145,7 +145,7 @@ export default function ProductPage() {
       </div>
 
       {/* Хлебные крошки */}
-      <section className="bg-white border-b py-4">
+      <section className="bg-white border-b py-4 pt-24">
         <div className="container-custom px-4">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <Link href="/" className="hover:text-blue-600">Главная</Link>

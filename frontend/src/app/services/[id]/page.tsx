@@ -62,7 +62,7 @@ export default function ServicePage() {
         <div className="bg-white shadow-sm">
           <Header />
         </div>
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center justify-center min-h-screen pt-24">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Загрузка услуги...</p>
@@ -78,7 +78,7 @@ export default function ServicePage() {
         <div className="bg-white shadow-sm">
           <Header />
         </div>
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center justify-center min-h-screen pt-24">
           <div className="text-center">
             <div className="text-6xl mb-4">🔧</div>
             <h1 className="text-2xl font-bold text-gray-800 mb-4">Услуга не найдена</h1>
@@ -102,7 +102,7 @@ export default function ServicePage() {
       </div>
 
       {/* Хлебные крошки */}
-      <section className="bg-white border-b py-4">
+      <section className="bg-white border-b py-4 pt-24">
         <div className="container-custom px-4">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <Link href="/" className="hover:text-emerald-600">Главная</Link>
