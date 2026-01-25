@@ -20,6 +20,9 @@ const cooperationRoutes = require('./routes/cooperation')
 const app = express()
 const PORT = process.env.PORT || 5000
 
+// Настройка trust proxy для работы за Nginx (важно для rate limiting и правильного определения IP)
+app.set('trust proxy', true)
+
 // CORS настройки ДО всех других middleware (важно!)
 const corsOptions = {
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
