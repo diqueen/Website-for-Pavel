@@ -102,8 +102,8 @@ export default function ServicePage() {
       </div>
 
       {/* Хлебные крошки */}
-      <section className="bg-white border-b py-4 pt-24">
-        <div className="container-custom px-4">
+      <section className="py-4">
+        <div className="container-custom px-4 pt-24">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <Link href="/" className="hover:text-emerald-600">Главная</Link>
             <span>/</span>
