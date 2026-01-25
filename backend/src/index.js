@@ -21,7 +21,8 @@ const app = express()
 const PORT = process.env.PORT || 5000
 
 // Настройка trust proxy для работы за Nginx (важно для rate limiting и правильного определения IP)
-app.set('trust proxy', true)
+// Указываем количество прокси: 1 (Nginx) - это безопаснее, чем trust proxy: true
+app.set('trust proxy', 1)
 
 // CORS настройки ДО всех других middleware (важно!)
 const corsOptions = {
@@ -58,6 +59,10 @@ const limiter = rateLimit({
   max: 100, // максимум 100 запросов с IP
   message: {
     error: 'Слишком много запросов, попробуйте позже'
+  },
+  // Отключаем проверку trust proxy, так как мы используем trust proxy: 1 (безопасно для одного прокси)
+  validate: {
+    trustProxy: false
   }
 })
 app.use('/api/', limiter)
