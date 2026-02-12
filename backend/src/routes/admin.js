@@ -891,20 +891,36 @@ router.delete('/categories/:id', (req, res) => {
     
     const categoryName = categories[categoryIndex].name
     
-    // Проверяем, есть ли товары с этой категорией
-    const products = loadProducts()
-    const productsWithCategory = products.filter(p => p.category === categoryName)
+    // Удаляем все товары с этой категорией из всех вкладок
+    const tabs = ['products', 'ship-parts', 'fittings', 'heat-exchangers']
+    let totalDeleted = 0
+    const deletedByTab = {}
     
-    if (productsWithCategory.length > 0) {
-      return res.status(400).json({ 
-        error: `Невозможно удалить категорию. Есть ${productsWithCategory.length} товар(ов) с этой категорией. Сначала измените категорию у товаров.` 
-      })
-    }
+    tabs.forEach(tabId => {
+      const products = loadProductsForTab(tabId)
+      const productsBefore = products.length
+      const filteredProducts = products.filter(p => p.category !== categoryName)
+      const deletedCount = productsBefore - filteredProducts.length
+      
+      if (deletedCount > 0) {
+        saveProductsForTab(tabId, filteredProducts)
+        totalDeleted += deletedCount
+        deletedByTab[tabId] = deletedCount
+        console.log(`Удалено ${deletedCount} товаров категории "${categoryName}" из вкладки ${tabId}`)
+      }
+    })
     
+    // Удаляем саму категорию
     categories.splice(categoryIndex, 1)
     saveCategories(categories)
     
-    res.json({ message: 'Категория удалена' })
+    console.log(`Категория "${categoryName}" удалена. Всего удалено товаров: ${totalDeleted}`)
+    
+    res.json({ 
+      message: `Категория "${categoryName}" удалена${totalDeleted > 0 ? `. Удалено ${totalDeleted} товар(ов) с этой категорией` : ''}`,
+      deletedProducts: totalDeleted,
+      deletedByTab: deletedByTab
+    })
   } catch (error) {
     console.error('Ошибка удаления категории:', error)
     res.status(500).json({ error: 'Ошибка удаления категории' })
