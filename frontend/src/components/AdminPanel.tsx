@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { 
   Trash2, Edit, Plus, Upload, FileSpreadsheet,
   Settings, Users, Package, Wrench, MessageSquare, 
-  BarChart3, Home, X, UserPlus, Menu, Layout
+  BarChart3, Home, X, UserPlus, Menu, Layout, ChevronDown, ChevronUp
 } from 'lucide-react'
 import { apiUrl, getApiUrl } from '@/lib/api'
 
@@ -199,6 +199,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [categories, setCategories] = useState<Array<{id: string, name: string}>>([])
   const [editingCategory, setEditingCategory] = useState<{id: string, name: string} | null>(null)
   const [newCategoryName, setNewCategoryName] = useState('')
+  const [collapsedTabs, setCollapsedTabs] = useState<Record<string, boolean>>({})
 
   // Определяем категорию для текущей вкладки
   const getCategoryForTab = (tabId: string): string | null => {
@@ -1171,7 +1172,30 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
         setEditingCategory(null)
         await loadCategories()
         // Перезагружаем товары, так как категория могла измениться
-        if (activeTab === 'products' || activeTab === 'ship-parts' || activeTab === 'fittings' || activeTab === 'heat-exchangers') {
+        if (activeTab === 'categories') {
+          // Перезагружаем товары для всех вкладок
+          const tabs = ['products', 'ship-parts', 'fittings', 'heat-exchangers']
+          const productsPromises = tabs.map(async (tabId) => {
+            try {
+              const res = await fetchWithTimeout(apiUrl(`/admin/products?tab=${tabId}`), {}, 10000)
+              if (res.ok) {
+                const data = await res.json()
+                return { tabId, products: Array.isArray(data) ? data : [] }
+              }
+              return { tabId, products: [] }
+            } catch (err) {
+              console.error(`Ошибка загрузки товаров для ${tabId}:`, err)
+              return { tabId, products: [] }
+            }
+          })
+          
+          const productsResults = await Promise.all(productsPromises)
+          const productsMap: Record<string, Product[]> = {}
+          productsResults.forEach(({ tabId, products }) => {
+            productsMap[tabId] = products
+          })
+          setAllTabProducts(productsMap)
+        } else if (activeTab === 'products' || activeTab === 'ship-parts' || activeTab === 'fittings' || activeTab === 'heat-exchangers') {
           const productsRes = await fetch(apiUrl('/admin/products'))
           if (productsRes.ok) {
             const productsData = await productsRes.json()
@@ -1187,8 +1211,8 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
     }
   }
 
-  const deleteCategory = async (id: string) => {
-    if (!confirm('Вы уверены, что хотите удалить эту категорию? Товары с этой категорией не будут удалены, но их категория будет сброшена.')) {
+  const deleteCategory = async (id: string, categoryName: string) => {
+    if (!confirm(`Вы уверены, что хотите удалить категорию "${categoryName}"? Товары с этой категорией не будут удалены, но их категория будет сброшена.`)) {
       return
     }
     
@@ -1200,6 +1224,30 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
       if (res.ok) {
         setError('')
         await loadCategories()
+        // Перезагружаем товары для всех вкладок, если мы на вкладке категорий
+        if (activeTab === 'categories') {
+          const tabs = ['products', 'ship-parts', 'fittings', 'heat-exchangers']
+          const productsPromises = tabs.map(async (tabId) => {
+            try {
+              const res = await fetchWithTimeout(apiUrl(`/admin/products?tab=${tabId}`), {}, 10000)
+              if (res.ok) {
+                const data = await res.json()
+                return { tabId, products: Array.isArray(data) ? data : [] }
+              }
+              return { tabId, products: [] }
+            } catch (err) {
+              console.error(`Ошибка загрузки товаров для ${tabId}:`, err)
+              return { tabId, products: [] }
+            }
+          })
+          
+          const productsResults = await Promise.all(productsPromises)
+          const productsMap: Record<string, Product[]> = {}
+          productsResults.forEach(({ tabId, products }) => {
+            productsMap[tabId] = products
+          })
+          setAllTabProducts(productsMap)
+        }
       } else {
         const errorData = await res.json().catch(() => ({ error: 'Неизвестная ошибка' }))
         setError(errorData.error || 'Ошибка удаления категории')
@@ -2041,55 +2089,144 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                               categoriesSet.add(p.category)
                             }
                           })
-                          const categories = Array.from(categoriesSet).sort()
+                          const categoryNames = Array.from(categoriesSet).sort()
+                          
+                          // Создаем массив категорий с данными из состояния categories
+                          const categoriesWithData = categoryNames.map(name => {
+                            const categoryData = categories.find(c => c.name === name)
+                            return {
+                              name,
+                              id: categoryData?.id || '',
+                              data: categoryData
+                            }
+                          })
+                          
+                          const isCollapsed = collapsedTabs[tabId] || false
                           
                           return (
                             <div key={tabId} className="bg-white rounded-lg border overflow-hidden">
-                              <div className="px-6 py-4 bg-gray-50 border-b">
-                                <h3 className="text-lg font-semibold text-gray-900">
-                                  {tabName}
-                                  <span className="ml-2 text-sm font-normal text-gray-500">
-                                    ({categories.length} категорий, {tabProducts.length} товаров)
-                                  </span>
-                                </h3>
+                              <div 
+                                className="px-6 py-4 bg-gray-50 border-b cursor-pointer hover:bg-gray-100 transition-colors"
+                                onClick={() => setCollapsedTabs(prev => ({ ...prev, [tabId]: !prev[tabId] }))}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                    {isCollapsed ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
+                                    {tabName}
+                                    <span className="ml-2 text-sm font-normal text-gray-500">
+                                      ({categoryNames.length} категорий, {tabProducts.length} товаров)
+                                    </span>
+                                  </h3>
+                                </div>
                               </div>
-                              <div className="overflow-x-auto">
-                                {categories.length === 0 ? (
-                                  <div className="px-6 py-4 text-center text-gray-500">
-                                    Категории не найдены для этой вкладки
-                                  </div>
-                                ) : (
-                                  <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
-                                      <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Категория</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Количество товаров</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
-                                      {categories.map((category) => {
-                                        const categoryProducts = tabProducts.filter(p => p.category === category)
-                                        return (
-                                          <tr key={`${tabId}-${category}`} className="hover:bg-gray-50">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                              {category}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                              {categoryProducts.length} товар(ов)
-                                            </td>
-                                          </tr>
-                                        )
-                                      })}
-                                    </tbody>
-                                  </table>
-                                )}
-                              </div>
+                              {!isCollapsed && (
+                                <div className="overflow-x-auto">
+                                  {categoryNames.length === 0 ? (
+                                    <div className="px-6 py-4 text-center text-gray-500">
+                                      Категории не найдены для этой вкладки
+                                    </div>
+                                  ) : (
+                                    <table className="min-w-full divide-y divide-gray-200">
+                                      <thead className="bg-gray-50">
+                                        <tr>
+                                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Категория</th>
+                                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Количество товаров</th>
+                                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Действия</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody className="bg-white divide-y divide-gray-200">
+                                        {categoriesWithData.map(({ name, id, data }) => {
+                                          const categoryProducts = tabProducts.filter(p => p.category === name)
+                                          
+                                          return (
+                                            <tr key={`${tabId}-${name}`} className="hover:bg-gray-50">
+                                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                {name}
+                                              </td>
+                                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {categoryProducts.length} товар(ов)
+                                              </td>
+                                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                <div className="flex items-center gap-2">
+                                                  {data ? (
+                                                    <>
+                                                      <button
+                                                        onClick={(e) => {
+                                                          e.stopPropagation()
+                                                          setEditingCategory(data)
+                                                        }}
+                                                        className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50"
+                                                        title="Редактировать"
+                                                      >
+                                                        <Edit className="w-4 h-4" />
+                                                      </button>
+                                                      <button
+                                                        onClick={(e) => {
+                                                          e.stopPropagation()
+                                                          deleteCategory(id, name)
+                                                        }}
+                                                        className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50"
+                                                        title="Удалить"
+                                                      >
+                                                        <Trash2 className="w-4 h-4" />
+                                                      </button>
+                                                    </>
+                                                  ) : (
+                                                    <span className="text-xs text-gray-400">Только в товарах</span>
+                                                  )}
+                                                </div>
+                                              </td>
+                                            </tr>
+                                          )
+                                        })}
+                                      </tbody>
+                                    </table>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           )
                         })}
                       </div>
                     )
                   })()}
+
+                  {/* Модальное окно редактирования категории */}
+                  {editingCategory && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Редактирование категории</h3>
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Название категории
+                            </label>
+                            <input
+                              type="text"
+                              value={editingCategory.name}
+                              onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                              placeholder="Введите название категории"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex justify-end gap-3 mt-6">
+                          <button
+                            onClick={() => setEditingCategory(null)}
+                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                          >
+                            Отмена
+                          </button>
+                          <button
+                            onClick={updateCategory}
+                            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                          >
+                            Сохранить
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Services Tab */}
                   {activeTab === 'services' && (
