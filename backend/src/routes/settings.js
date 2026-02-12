@@ -40,6 +40,13 @@ const saveSettings = (settings) => {
 // GET /api/settings - получить все настройки
 router.get('/', (req, res) => {
   try {
+    // Устанавливаем заголовки для предотвращения кеширования
+    res.set({
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    })
+    
     const settings = loadSettings()
     if (settings) {
       res.json(settings)

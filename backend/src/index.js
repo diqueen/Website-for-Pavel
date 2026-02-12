@@ -54,16 +54,16 @@ app.use(helmet({
 }))
 
 // Rate limiting
+// Примечание: предупреждения о trust proxy можно игнорировать, так как trust proxy: 1 безопасно для одного прокси (Nginx)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 минут
   max: 100, // максимум 100 запросов с IP
   message: {
     error: 'Слишком много запросов, попробуйте позже'
   },
-  // Отключаем проверку trust proxy, так как мы используем trust proxy: 1 (безопасно для одного прокси)
-  validate: {
-    trustProxy: false
-  }
+  // Используем стандартный keyGenerator, который работает с trust proxy: 1
+  standardHeaders: true,
+  legacyHeaders: false
 })
 app.use('/api/', limiter)
 

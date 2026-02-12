@@ -74,7 +74,7 @@ export default function ContactPage() {
     email: settings.contacts?.email || "info@marine-company.ru",
     address: settings.contacts?.address || settings.contacts?.location || "Адрес не указан",
     workingHours: settings.contacts?.workingHours || "Пн-Пт: 9:00-18:00, Сб: 10:00-16:00",
-    emergencyPhone: settings.contacts?.phone || "+7 (999) 123-45-68"
+    emergencyPhone: settings.contacts?.emergencyPhone || settings.contacts?.phone || "+7 (999) 123-45-68"
   }
 
   const socialLinks = {

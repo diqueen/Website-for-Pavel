@@ -30,6 +30,7 @@ interface SiteSettings {
     telegram: string
     whatsapp: string
     otherContacts: string
+    emergencyPhone?: string
   }
   seo: {
     metaTitle: string
@@ -84,7 +85,8 @@ const defaultSettings: SiteSettings = {
     location: "Санкт-Петербург, Россия",
     telegram: "@marineservice",
     whatsapp: "+7 (999) 123-45-67",
-    otherContacts: "Дополнительные способы связи"
+    otherContacts: "Дополнительные способы связи",
+    emergencyPhone: "+7 (999) 123-45-68"
   },
   seo: {
     metaTitle: "Морское оборудование и услуги | Marine Service",
@@ -102,7 +104,13 @@ export const useSiteSettings = () => {
   const loadSettings = async () => {
     try {
       // Добавляем timestamp для предотвращения кэширования
-      const response = await fetch(`${apiUrl('/settings')}?t=${Date.now()}`)
+      const response = await fetch(`${apiUrl('/settings')}?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      })
       if (response.ok) {
         const data = await response.json()
         console.log('Настройки загружены, логотип:', data.company?.logo)

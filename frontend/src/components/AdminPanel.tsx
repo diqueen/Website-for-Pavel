@@ -113,6 +113,7 @@ interface SiteSettings {
     telegram: string
     whatsapp: string
     otherContacts: string
+    emergencyPhone?: string
   }
   seo: {
     metaTitle: string
@@ -1163,7 +1164,11 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
         setSiteSettings(settings)
         setError('')
         // Показываем уведомление об успешном сохранении
-        alert('Настройки успешно сохранены!')
+        alert('Настройки успешно сохранены! Страница будет перезагружена для применения изменений.')
+        // Перезагружаем страницу для обновления настроек у всех пользователей
+        setTimeout(() => {
+          window.location.reload()
+        }, 500)
       } else {
         const errorData = await res.json()
         setError(errorData.error || 'Ошибка сохранения настроек')
@@ -1177,12 +1182,17 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
     if (!siteSettings) return
     const updatedSettings = { ...siteSettings, siteInfo }
     await saveSiteSettings(updatedSettings)
+    // Перезагрузка уже происходит в saveSiteSettings
   }
 
   const saveContacts = async (contacts: SiteSettings['contacts']) => {
     if (!siteSettings) return
     const updatedSettings = { ...siteSettings, contacts }
     await saveSiteSettings(updatedSettings)
+    // Перезагружаем настройки после сохранения для обновления на всех страницах
+    setTimeout(() => {
+      window.location.reload()
+    }, 500)
   }
 
   // Excel функции
@@ -2677,6 +2687,19 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                 } : null)}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
                                 placeholder="Дополнительные способы связи"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Аварийный телефон</label>
+                              <input
+                                type="text"
+                                value={siteSettings.contacts.emergencyPhone || ''}
+                                onChange={(e) => setSiteSettings(prev => prev ? {
+                                  ...prev,
+                                  contacts: { ...prev.contacts, emergencyPhone: e.target.value }
+                                } : null)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+                                placeholder="+7 (999) 123-45-68"
                               />
                             </div>
                           </div>
