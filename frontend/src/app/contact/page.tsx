@@ -137,8 +137,10 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-1">Телефон</h3>
-                    <p className="text-gray-600 mb-2">{contactInfo.phone}</p>
-                    <p className="text-sm text-gray-500">Аварийный: {contactInfo.emergencyPhone}</p>
+                    <p className="text-gray-600 mb-1">{contactInfo.phone}</p>
+                    {contactInfo.emergencyPhone && contactInfo.emergencyPhone !== contactInfo.phone && (
+                      <p className="text-gray-600 text-sm">{contactInfo.emergencyPhone}</p>
+                    )}
                   </div>
                 </div>
 

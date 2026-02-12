@@ -162,15 +162,28 @@ const Header = () => {
 
             {/* Кнопка меню (для всех устройств) */}
             <div className="flex items-center space-x-2">
-              {/* Номер телефона */}
-              {settings?.contacts?.phone && (
-                <a 
-                  href={`tel:${settings.contacts.phone.replace(/\s/g, '')}`}
-                  className="hidden md:flex items-center px-3 py-2 text-marine-600 hover:text-marine-700 transition-all duration-300 hover:bg-gradient-to-br hover:from-marine-50 hover:to-ocean-50 rounded-xl hover:shadow-lg border border-transparent hover:border-marine-200 text-sm font-medium"
-                  title="Позвонить"
-                >
-                  {settings.contacts.phone}
-                </a>
+              {/* Номера телефонов */}
+              {(settings?.contacts?.phone || settings?.contacts?.emergencyPhone) && (
+                <div className="hidden md:flex flex-col items-end px-3 py-2 text-marine-600 hover:text-marine-700 transition-all duration-300 hover:bg-gradient-to-br hover:from-marine-50 hover:to-ocean-50 rounded-xl hover:shadow-lg border border-transparent hover:border-marine-200 text-sm font-medium">
+                  {settings.contacts.phone && (
+                    <a 
+                      href={`tel:${settings.contacts.phone.replace(/\s/g, '')}`}
+                      title="Позвонить"
+                      className="hover:underline"
+                    >
+                      {settings.contacts.phone}
+                    </a>
+                  )}
+                  {settings.contacts.emergencyPhone && settings.contacts.emergencyPhone !== settings.contacts.phone && (
+                    <a 
+                      href={`tel:${settings.contacts.emergencyPhone.replace(/\s/g, '')}`}
+                      title="Позвонить"
+                      className="hover:underline text-xs mt-1"
+                    >
+                      {settings.contacts.emergencyPhone}
+                    </a>
+                  )}
+                </div>
               )}
 
               {/* Кнопка корзины */}

@@ -347,6 +347,11 @@ function ProductsPage(props?: ProductsPageProps) {
     loadProducts()
   }, [categoryFilter])
 
+  // Применяем фильтры при изменении состояния
+  useEffect(() => {
+    applyFilters(searchQuery, selectedCategory, selectedSubcategory)
+  }, [products, searchQuery, selectedCategory, selectedSubcategory, applyFilters])
+
   // Создаем структуру категорий с подкатегориями (мемоизировано)
   // Категории и подкатегории берутся только из товаров текущей вкладки
   const categoriesWithSubcategories = useMemo(() => {
@@ -510,142 +515,147 @@ function ProductsPage(props?: ProductsPageProps) {
       {/* Основной контент */}
       <section className="py-20">
         <div className="container-custom px-4 sm:px-6 lg:px-8">
-          {/* Двухколоночный layout: категории слева, подкатегории справа */}
+          {/* Фильтры: категории и подкатегории в компактном виде */}
           {!loading && categoriesWithSubcategories.length > 0 && (
-            <div className="flex flex-col lg:flex-row gap-6 mb-8">
-              {/* Левая колонка - Список категорий */}
-              <div className="lg:w-64 flex-shrink-0">
-                <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Категории</h3>
-                  <div className="space-y-1">
-                    {categoriesWithSubcategories.map(({ category, subcategories }) => {
-                      const isCategorySelected = selectedCategory === category
-                      const hasSubcategories = subcategories.length > 0
+            <div className="mb-8">
+              {/* Категории - горизонтальная прокручиваемая панель */}
+              <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">Категории</h3>
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                  <button
+                    onClick={() => handleCategorySelect(null)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
+                      !selectedCategory
+                        ? colors.primary === 'sky' ? 'bg-sky-600 text-white shadow-md' :
+                          colors.primary === 'blue' ? 'bg-blue-600 text-white shadow-md' :
+                          colors.primary === 'emerald' ? 'bg-emerald-600 text-white shadow-md' :
+                          colors.primary === 'indigo' ? 'bg-indigo-600 text-white shadow-md' :
+                          'bg-blue-600 text-white shadow-md'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                    }`}
+                  >
+                    Все категории
+                  </button>
+                  {categoriesWithSubcategories.map(({ category, subcategories }) => {
+                    const isCategorySelected = selectedCategory === category
+                    const hasSubcategories = subcategories.length > 0
 
-                      return (
-                        <button
-                          key={category}
-                          onClick={() => {
-                            handleCategorySelect(category)
-                          }}
-                          className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
-                            isCategorySelected
-                              ? colors.primary === 'sky' ? 'bg-sky-100 text-sky-700 border-2 border-sky-300' :
-                                colors.primary === 'blue' ? 'bg-blue-100 text-blue-700 border-2 border-blue-300' :
-                                colors.primary === 'emerald' ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-300' :
-                                colors.primary === 'indigo' ? 'bg-indigo-100 text-indigo-700 border-2 border-indigo-300' :
-                                'bg-blue-100 text-blue-700 border-2 border-blue-300'
-                              : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border-2 border-transparent'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium">{category}</span>
-                            {hasSubcategories && (
-                              <span className="text-xs text-gray-500">
-                                ({subcategories.length})
-                              </span>
-                            )}
-                          </div>
-                        </button>
-                      )
-                    })}
-                  </div>
+                    return (
+                      <button
+                        key={category}
+                        onClick={() => {
+                          handleCategorySelect(category)
+                        }}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
+                          isCategorySelected
+                            ? colors.primary === 'sky' ? 'bg-sky-600 text-white shadow-md' :
+                              colors.primary === 'blue' ? 'bg-blue-600 text-white shadow-md' :
+                              colors.primary === 'emerald' ? 'bg-emerald-600 text-white shadow-md' :
+                              colors.primary === 'indigo' ? 'bg-indigo-600 text-white shadow-md' :
+                              'bg-blue-600 text-white shadow-md'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                        }`}
+                      >
+                        {category}
+                        {hasSubcategories && (
+                          <span className="ml-1 text-xs opacity-75">
+                            ({subcategories.length})
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 
-              {/* Правая колонка - Подкатегории выбранной категории */}
-              <div className="flex-1">
-                {selectedCategory ? (
-                  (() => {
-                    const selectedCategoryData = categoriesWithSubcategories.find(c => c.category === selectedCategory)
-                    const subcategories = selectedCategoryData?.subcategories || []
-                    
-                    return (
-                      <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-semibold text-gray-900">
-                            Подкатегории: {selectedCategory}
-                          </h3>
-                          {subcategories.length > 0 && (
-                            <span className="text-sm text-gray-500">
-                              Всего: {subcategories.length}
-                            </span>
-                          )}
-                        </div>
-                        {subcategories.length > 0 ? (
-                          <div>
-                            {(() => {
-                              const maxVisibleSubcategories = 12
-                              const visibleSubcategories = showAllSubcategories 
-                                ? subcategories 
-                                : subcategories.slice(0, maxVisibleSubcategories)
-                              const hasMoreSubcategories = subcategories.length > maxVisibleSubcategories
-
-                              return (
-                                <>
-                                  <div className="flex flex-wrap gap-3">
-                                    {visibleSubcategories.map((subcategory) => {
-                                      const isSubcategorySelected = 
-                                        selectedSubcategory === subcategory
-                                      
-                                      return (
-                                        <button
-                                          key={subcategory}
-                                          onClick={() => handleSubcategorySelect(selectedCategory, subcategory)}
-                                          className={`px-5 py-3 rounded-lg text-sm font-medium transition-colors ${
-                                            isSubcategorySelected
-                                              ? colors.primary === 'sky' ? 'bg-sky-600 text-white shadow-md' :
-                                                colors.primary === 'blue' ? 'bg-blue-600 text-white shadow-md' :
-                                                colors.primary === 'emerald' ? 'bg-emerald-600 text-white shadow-md' :
-                                                colors.primary === 'indigo' ? 'bg-indigo-600 text-white shadow-md' :
-                                                'bg-blue-600 text-white shadow-md'
-                                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
-                                          }`}
-                                        >
-                                          {subcategory}
-                                        </button>
-                                      )
-                                    })}
-                                  </div>
-                                  
-                                  {hasMoreSubcategories && (
-                                    <button
-                                      onClick={() => setShowAllSubcategories(!showAllSubcategories)}
-                                      className={`mt-4 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                                        colors.primary === 'sky' ? 'bg-sky-50 text-sky-700 hover:bg-sky-100' :
-                                        colors.primary === 'blue' ? 'bg-blue-50 text-blue-700 hover:bg-blue-100' :
-                                        colors.primary === 'emerald' ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' :
-                                        colors.primary === 'indigo' ? 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100' :
-                                        'bg-blue-50 text-blue-700 hover:bg-blue-100'
-                                      }`}
-                                    >
-                                      {showAllSubcategories 
-                                        ? `Скрыть (показано ${subcategories.length})` 
-                                        : `Показать все (${subcategories.length - maxVisibleSubcategories} еще)`}
-                                    </button>
-                                  )}
-                                </>
-                              )
-                            })()}
-                          </div>
-                        ) : (
-                          <div className="text-center py-8 text-gray-500">
-                            <p>В этой категории нет подкатегорий</p>
-                            <p className="text-sm mt-2">Товары будут отображаться напрямую из категории</p>
-                          </div>
-                        )}
+              {/* Подкатегории выбранной категории */}
+              {selectedCategory && (() => {
+                const selectedCategoryData = categoriesWithSubcategories.find(c => c.category === selectedCategory)
+                const subcategories = selectedCategoryData?.subcategories || []
+                
+                if (subcategories.length > 0) {
+                  return (
+                    <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4 mb-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-semibold text-gray-900">
+                          Подкатегории: <span className="font-normal">{selectedCategory}</span>
+                        </h3>
+                        <span className="text-xs text-gray-500">
+                          {subcategories.length} подкатегорий
+                        </span>
                       </div>
-                    )
-                  })()
-                ) : (
-                  <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
-                    <div className="text-center py-8 text-gray-500">
-                      <p className="text-lg font-medium mb-2">Выберите категорию</p>
-                      <p className="text-sm">Выберите категорию слева, чтобы увидеть её подкатегории</p>
+                      {(() => {
+                        const maxVisibleSubcategories = 15
+                        const visibleSubcategories = showAllSubcategories 
+                          ? subcategories 
+                          : subcategories.slice(0, maxVisibleSubcategories)
+                        const hasMoreSubcategories = subcategories.length > maxVisibleSubcategories
+
+                        return (
+                          <>
+                            <div className="flex flex-wrap gap-2">
+                              <button
+                                onClick={() => handleSubcategorySelect(selectedCategory, null)}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                                  !selectedSubcategory
+                                    ? colors.primary === 'sky' ? 'bg-sky-600 text-white shadow-md' :
+                                      colors.primary === 'blue' ? 'bg-blue-600 text-white shadow-md' :
+                                      colors.primary === 'emerald' ? 'bg-emerald-600 text-white shadow-md' :
+                                      colors.primary === 'indigo' ? 'bg-indigo-600 text-white shadow-md' :
+                                      'bg-blue-600 text-white shadow-md'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                                }`}
+                              >
+                                Все подкатегории
+                              </button>
+                              {visibleSubcategories.map((subcategory) => {
+                                const isSubcategorySelected = 
+                                  selectedSubcategory === subcategory
+                                
+                                return (
+                                  <button
+                                    key={subcategory}
+                                    onClick={() => handleSubcategorySelect(selectedCategory, subcategory)}
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                                      isSubcategorySelected
+                                        ? colors.primary === 'sky' ? 'bg-sky-600 text-white shadow-md' :
+                                          colors.primary === 'blue' ? 'bg-blue-600 text-white shadow-md' :
+                                          colors.primary === 'emerald' ? 'bg-emerald-600 text-white shadow-md' :
+                                          colors.primary === 'indigo' ? 'bg-indigo-600 text-white shadow-md' :
+                                          'bg-blue-600 text-white shadow-md'
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                                    }`}
+                                  >
+                                    {subcategory}
+                                  </button>
+                                )
+                              })}
+                            </div>
+                            
+                            {hasMoreSubcategories && (
+                              <button
+                                onClick={() => setShowAllSubcategories(!showAllSubcategories)}
+                                className={`mt-3 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                                  colors.primary === 'sky' ? 'bg-sky-50 text-sky-700 hover:bg-sky-100' :
+                                  colors.primary === 'blue' ? 'bg-blue-50 text-blue-700 hover:bg-blue-100' :
+                                  colors.primary === 'emerald' ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' :
+                                  colors.primary === 'indigo' ? 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100' :
+                                  'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                                }`}
+                              >
+                                {showAllSubcategories 
+                                  ? `Скрыть (показано ${subcategories.length})` 
+                                  : `Показать все (${subcategories.length - maxVisibleSubcategories} еще)`}
+                              </button>
+                            )}
+                          </>
+                        )
+                      })()}
                     </div>
-                  </div>
-                )}
-              </div>
+                  )
+                }
+                return null
+              })()}
             </div>
           )}
 
@@ -728,7 +738,7 @@ function ProductsPage(props?: ProductsPageProps) {
                   Назад
                 </button>
                 
-                <div className="flex gap-3">
+                <div className="flex gap-4">
                   {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
                     let pageNum: number
                     if (totalPages <= 7) {
