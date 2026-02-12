@@ -347,11 +347,6 @@ function ProductsPage(props?: ProductsPageProps) {
     loadProducts()
   }, [categoryFilter])
 
-  // Применяем фильтры при изменении состояния
-  useEffect(() => {
-    applyFilters(searchQuery, selectedCategory, selectedSubcategory)
-  }, [products, searchQuery, selectedCategory, selectedSubcategory, applyFilters])
-
   // Создаем структуру категорий с подкатегориями (мемоизировано)
   // Категории и подкатегории берутся только из товаров текущей вкладки
   const categoriesWithSubcategories = useMemo(() => {
@@ -467,6 +462,10 @@ function ProductsPage(props?: ProductsPageProps) {
     }
   }, [searchQuery, applyFilters, selectedCategory, selectedSubcategory])
 
+  // Применяем фильтры при изменении состояния (после объявления applyFilters)
+  useEffect(() => {
+    applyFilters(searchQuery, selectedCategory, selectedSubcategory)
+  }, [products, searchQuery, selectedCategory, selectedSubcategory, applyFilters])
 
   // Пагинация
   const totalPages = useMemo(() => 
