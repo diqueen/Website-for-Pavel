@@ -182,6 +182,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isNavOpen, setIsNavOpen] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
+  const [allTabProducts, setAllTabProducts] = useState<Record<string, Product[]>>({})
   const [services, setServices] = useState<Service[]>([])
   const [contacts, setContacts] = useState<Contact[]>([])
   const [cooperation, setCooperation] = useState<CooperationRequest[]>([])
@@ -493,7 +494,39 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
         }
       }
       
-      if (activeTab === 'categories' || activeTab === 'products' || activeTab === 'ship-parts' || activeTab === 'fittings' || activeTab === 'heat-exchangers') {
+      if (activeTab === 'categories') {
+        // Загружаем товары для всех вкладок при открытии вкладки категорий
+        const tabs = ['products', 'ship-parts', 'fittings', 'heat-exchangers']
+        const productsPromises = tabs.map(async (tabId) => {
+          try {
+            const res = await fetchWithTimeout(apiUrl(`/admin/products?tab=${tabId}`), {}, 10000)
+            if (res.ok) {
+              const data = await res.json()
+              return { tabId, products: Array.isArray(data) ? data : [] }
+            }
+            return { tabId, products: [] }
+          } catch (err) {
+            console.error(`Ошибка загрузки товаров для ${tabId}:`, err)
+            return { tabId, products: [] }
+          }
+        })
+        
+        const productsResults = await Promise.all(productsPromises)
+        const productsMap: Record<string, Product[]> = {}
+        productsResults.forEach(({ tabId, products }) => {
+          productsMap[tabId] = products
+        })
+        setAllTabProducts(productsMap)
+        
+        // Также загружаем категории
+        const categoriesRes = await fetch(apiUrl('/admin/categories'))
+        if (categoriesRes.ok) {
+          const categoriesData = await categoriesRes.json()
+          setCategories(Array.isArray(categoriesData) ? categoriesData : [])
+        }
+      }
+      
+      if (activeTab === 'products' || activeTab === 'ship-parts' || activeTab === 'fittings' || activeTab === 'heat-exchangers') {
         const categoriesRes = await fetch(apiUrl('/admin/categories'))
         if (categoriesRes.ok) {
           const categoriesData = await categoriesRes.json()
@@ -1965,22 +1998,22 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                       { 
                         tabName: 'Все товары', 
                         tabId: 'products',
-                        products: products // Товары уже загружены для нужной вкладки
+                        products: allTabProducts['products'] || []
                       },
                       { 
                         tabName: 'Судовые запчасти', 
                         tabId: 'ship-parts',
-                        products: products // Товары уже загружены для нужной вкладки
+                        products: allTabProducts['ship-parts'] || []
                       },
                       { 
                         tabName: 'Арматура', 
                         tabId: 'fittings',
-                        products: products // Товары уже загружены для нужной вкладки
+                        products: allTabProducts['fittings'] || []
                       },
                       { 
                         tabName: 'Теплообменники', 
                         tabId: 'heat-exchangers',
-                        products: products // Товары уже загружены для нужной вкладки
+                        products: allTabProducts['heat-exchangers'] || []
                       }
                     ]
 
