@@ -6,7 +6,6 @@ import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import Services from '@/components/Services'
 import Products from '@/components/Products'
-import Contact from '@/components/Contact'
 import Footer from '@/components/Footer'
 import ContactForm from '@/components/ContactForm'
 
@@ -89,7 +88,6 @@ export default function Home() {
       <Hero onContactClick={() => setShowContactForm(true)} />
       <Services />
       <Products />
-      <Contact onContactClick={() => setShowContactForm(true)} />
       <Footer />
       </div>
 

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { 
   Trash2, Edit, Plus, Upload, FileSpreadsheet,
   Settings, Users, Package, Wrench, MessageSquare, 
-  BarChart3, Home, X, UserPlus, Menu
+  BarChart3, Home, X, UserPlus, Menu, Layout
 } from 'lucide-react'
 import { apiUrl, getApiUrl } from '@/lib/api'
 
@@ -160,6 +160,14 @@ interface SiteSettings {
       formTitle?: string
       formDescription?: string
       otherWaysTitle?: string
+    }
+    footer?: {
+      logo?: string
+      companyName?: string
+      companyTagline?: string
+      companyDescription?: string
+      copyrightText?: string
+      madeWithText?: string
     }
   }
   updatedAt?: string
@@ -477,7 +485,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
         }
       }
       
-      if (activeTab === 'settings' || activeTab === 'homepage') {
+      if (activeTab === 'settings' || activeTab === 'homepage' || activeTab === 'footer') {
         const settingsRes = await fetch(apiUrl('/settings'))
         if (settingsRes.ok) {
           const settingsData = await settingsRes.json()
@@ -1350,6 +1358,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                           { id: 'cooperation', name: 'Сотрудничество', icon: UserPlus },
                           { id: 'settings', name: 'Настройки сайта', icon: Settings },
                           { id: 'homepage', name: 'Главная страница', icon: Home },
+                          { id: 'footer', name: 'Подвал сайта', icon: Layout },
                         ]
                         const currentTab = tabs.find(t => t.id === activeTab) || tabs[0]
                         return currentTab.name
@@ -1380,8 +1389,9 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                         { id: 'contacts', name: 'Обратная связь', icon: MessageSquare },
                         { id: 'cooperation', name: 'Сотрудничество', icon: UserPlus },
                         { id: 'settings', name: 'Настройки сайта', icon: Settings },
-                        { id: 'homepage', name: 'Главная страница', icon: Home },
-                      ].map((tab) => {
+                          { id: 'homepage', name: 'Главная страница', icon: Home },
+                          { id: 'footer', name: 'Подвал сайта', icon: Layout },
+                        ].map((tab) => {
                         const Icon = tab.icon
                         return (
                           <button
@@ -3617,6 +3627,222 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                           </button>
                         </div>
                         </>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Footer Tab */}
+                  {activeTab === 'footer' && (
+                    <div className="space-y-2">
+                      <h2 className="text-base font-semibold text-gray-900">Настройки подвала сайта (Footer)</h2>
+                      
+                      {!siteSettings ? (
+                        <div className="text-center py-8">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                          <p className="mt-2 text-gray-600">Загрузка настроек...</p>
+                        </div>
+                      ) : (
+                        <div className="bg-white p-3 rounded-lg border">
+                          <div className="space-y-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Логотип компании</label>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={async (e) => {
+                                  const file = e.target.files?.[0]
+                                  if (!file) return
+                                  
+                                  if (!file.type.startsWith('image/')) {
+                                    setError('Пожалуйста, выберите файл изображения')
+                                    return
+                                  }
+                                  
+                                  if (file.size > 5 * 1024 * 1024) {
+                                    setError('Размер файла не должен превышать 5MB')
+                                    return
+                                  }
+                                  
+                                  const formData = new FormData()
+                                  formData.append('image', file)
+                                  
+                                  try {
+                                    const res = await fetch(apiUrl('/upload/image'), {
+                                      method: 'POST',
+                                      body: formData
+                                    })
+                                    
+                                    if (res.ok) {
+                                      const data = await res.json()
+                                      const logoUrl = data.url
+                                      console.log('Логотип Footer загружен, URL:', logoUrl)
+                                      
+                                      setSiteSettings(prev => prev ? {
+                                        ...prev,
+                                        pageTitles: {
+                                          ...prev.pageTitles,
+                                          footer: {
+                                            ...(prev.pageTitles?.footer || {}),
+                                            logo: logoUrl
+                                          }
+                                        }
+                                      } : null)
+                                      
+                                      // Автоматически сохраняем настройки после загрузки логотипа
+                                      if (siteSettings) {
+                                        const updatedSettings = {
+                                          ...siteSettings,
+                                          pageTitles: {
+                                            ...siteSettings.pageTitles,
+                                            footer: {
+                                              ...(siteSettings.pageTitles?.footer || {}),
+                                              logo: logoUrl
+                                            }
+                                          }
+                                        }
+                                        const saveRes = await fetch(apiUrl('/settings'), {
+                                          method: 'PUT',
+                                          headers: { 'Content-Type': 'application/json' },
+                                          body: JSON.stringify(updatedSettings)
+                                        })
+                                        if (saveRes.ok) {
+                                          console.log('Настройки Footer с логотипом сохранены')
+                                          alert('Логотип успешно загружен и сохранен!')
+                                        }
+                                      }
+                                    } else {
+                                      const errorData = await res.json()
+                                      setError(errorData.error || 'Ошибка загрузки логотипа')
+                                    }
+                                  } catch (err) {
+                                    console.error('Ошибка загрузки логотипа:', err)
+                                    setError('Ошибка загрузки логотипа')
+                                  }
+                                }}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 text-sm"
+                              />
+                              <p className="mt-1 text-xs text-gray-500">
+                                Максимальный размер: 5MB. Форматы: JPG, PNG, GIF, WebP
+                              </p>
+                              {siteSettings.pageTitles?.footer?.logo && (
+                                <div className="mt-2">
+                                  <img 
+                                    src={siteSettings.pageTitles.footer.logo} 
+                                    alt="Логотип Footer" 
+                                    className="h-16 w-16 object-contain border border-gray-300 rounded"
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none'
+                                    }}
+                                  />
+                                </div>
+                              )}
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Название компании</label>
+                              <input
+                                type="text"
+                                value={siteSettings.pageTitles?.footer?.companyName || ''}
+                                onChange={(e) => setSiteSettings(prev => prev ? {
+                                  ...prev,
+                                  pageTitles: {
+                                    ...prev.pageTitles,
+                                    footer: {
+                                      ...(prev.pageTitles?.footer || {}),
+                                      companyName: e.target.value
+                                    }
+                                  }
+                                } : null)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                placeholder="Marine Company"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Слоган компании</label>
+                              <input
+                                type="text"
+                                value={siteSettings.pageTitles?.footer?.companyTagline || ''}
+                                onChange={(e) => setSiteSettings(prev => prev ? {
+                                  ...prev,
+                                  pageTitles: {
+                                    ...prev.pageTitles,
+                                    footer: {
+                                      ...(prev.pageTitles?.footer || {}),
+                                      companyTagline: e.target.value
+                                    }
+                                  }
+                                } : null)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                placeholder="Морские решения"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Описание компании</label>
+                              <textarea
+                                value={siteSettings.pageTitles?.footer?.companyDescription || ''}
+                                onChange={(e) => setSiteSettings(prev => prev ? {
+                                  ...prev,
+                                  pageTitles: {
+                                    ...prev.pageTitles,
+                                    footer: {
+                                      ...(prev.pageTitles?.footer || {}),
+                                      companyDescription: e.target.value
+                                    }
+                                  }
+                                } : null)}
+                                rows={3}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                placeholder="Профессиональные решения для морской индустрии. Более 10 лет опыта в поставке оборудования, техническом обслуживании и консультациях."
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Текст копирайта (используйте {'{currentYear}'} для года)</label>
+                              <input
+                                type="text"
+                                value={siteSettings.pageTitles?.footer?.copyrightText || ''}
+                                onChange={(e) => setSiteSettings(prev => prev ? {
+                                  ...prev,
+                                  pageTitles: {
+                                    ...prev.pageTitles,
+                                    footer: {
+                                      ...(prev.pageTitles?.footer || {}),
+                                      copyrightText: e.target.value
+                                    }
+                                  }
+                                } : null)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                placeholder="© {currentYear} Marine Company. Все права защищены."
+                              />
+                              <p className="mt-1 text-xs text-gray-500">
+                                Используйте {'{currentYear}'} для автоматической подстановки текущего года
+                              </p>
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Текст "Сделано с ❤️"</label>
+                              <input
+                                type="text"
+                                value={siteSettings.pageTitles?.footer?.madeWithText || ''}
+                                onChange={(e) => setSiteSettings(prev => prev ? {
+                                  ...prev,
+                                  pageTitles: {
+                                    ...prev.pageTitles,
+                                    footer: {
+                                      ...(prev.pageTitles?.footer || {}),
+                                      madeWithText: e.target.value
+                                    }
+                                  }
+                                } : null)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                placeholder="Сделано с ❤️ для морской индустрии"
+                              />
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => saveSiteSettings(siteSettings)}
+                            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                          >
+                            Сохранить настройки Footer
+                          </button>
+                        </div>
                       )}
                     </div>
                   )}

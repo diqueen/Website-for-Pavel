@@ -78,6 +78,14 @@ interface SiteSettings {
       formDescription?: string
       otherWaysTitle?: string
     }
+    footer?: {
+      logo?: string
+      companyName?: string
+      companyTagline?: string
+      companyDescription?: string
+      copyrightText?: string
+      madeWithText?: string
+    }
   }
   updatedAt?: string
 }
