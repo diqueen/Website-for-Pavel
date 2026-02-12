@@ -42,6 +42,41 @@ const {
   getTabForFileName 
 } = require('../utils/productsFiles')
 
+// Функции для работы с категориями
+const loadCategories = () => {
+  try {
+    const dataPath = path.join(__dirname, '../../data/categories.json')
+    
+    let categories = []
+    if (fs.existsSync(dataPath)) {
+      const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'))
+      categories = Array.isArray(data) ? data : []
+    }
+    
+    return categories
+  } catch (error) {
+    console.error('Ошибка загрузки категорий:', error)
+    return []
+  }
+}
+
+const saveCategories = (categories) => {
+  try {
+    const dataPath = path.join(__dirname, '../../data/categories.json')
+    const dataDir = path.dirname(dataPath)
+    
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true })
+    }
+    
+    fs.writeFileSync(dataPath, JSON.stringify(categories, null, 2), 'utf8')
+    return true
+  } catch (error) {
+    console.error('Ошибка сохранения категорий:', error)
+    return false
+  }
+}
+
 // Функция для проверки, является ли строка подкатегорией
 // Подкатегория = объединение ячеек A-G (колонки 0-6), но НЕ первая строка
 const isSubcategoryRow = (rowNum, merges) => {
@@ -807,16 +842,48 @@ router.post('/import', upload.single('excelFile'), async (req, res) => {
     
     // Сохраняем обновленный список товаров в файл для этой вкладки
     if (saveProductsForTab(tabId, allProducts)) {
+      // Собираем уникальные категории из импортированных товаров
+      const importedCategories = [...new Set(allNewProducts.map(p => p.category).filter(Boolean))]
+      
+      // Загружаем существующие категории
+      const existingCategories = loadCategories()
+      const existingCategoryNames = new Set(existingCategories.map(c => c.name))
+      
+      // Добавляем новые категории, которых еще нет
+      const newCategories = []
+      importedCategories.forEach(categoryName => {
+        if (!existingCategoryNames.has(categoryName)) {
+          // Генерируем уникальный ID для новой категории
+          const newId = Date.now().toString() + Math.random().toString(36).substr(2, 5)
+          newCategories.push({
+            id: newId,
+            name: categoryName,
+            createdAt: new Date().toISOString()
+          })
+        }
+      })
+      
+      // Сохраняем обновленный список категорий, если есть новые
+      if (newCategories.length > 0) {
+        const updatedCategories = [...existingCategories, ...newCategories]
+        if (saveCategories(updatedCategories)) {
+          console.log(`✅ Добавлено ${newCategories.length} новых категорий из Excel:`, newCategories.map(c => c.name).join(', '))
+        } else {
+          console.warn('⚠️  Не удалось сохранить новые категории')
+        }
+      }
+      
       // Удаляем временный файл
       fs.unlinkSync(filePath)
       
       res.json({
         success: true,
-        message: `Успешно импортировано ${newProductsToAdd.length} новых товаров, обновлено ${allNewProducts.length - newProductsToAdd.length} существующих из ${sheetResults.length} листов`,
+        message: `Успешно импортировано ${newProductsToAdd.length} новых товаров, обновлено ${allNewProducts.length - newProductsToAdd.length} существующих из ${sheetResults.length} листов${newCategories.length > 0 ? `. Добавлено ${newCategories.length} новых категорий` : ''}`,
         imported: newProductsToAdd.length,
         updated: allNewProducts.length - newProductsToAdd.length,
         total: allProducts.length,
         categories: [...new Set(allNewProducts.map(p => p.category))],
+        newCategories: newCategories.map(c => c.name),
         sheetResults: sheetResults
       })
     } else {
