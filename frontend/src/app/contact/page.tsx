@@ -108,8 +108,7 @@ export default function ContactPage() {
               </p>
             )}
             <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
-              Свяжитесь с нами любым удобным способом. Мы всегда готовы помочь 
-              и ответить на все ваши вопросы.
+              {settings?.pageTitles?.contact?.description || 'Свяжитесь с нами любым удобным способом. Мы всегда готовы помочь и ответить на все ваши вопросы.'}
             </p>
           </motion.div>
         </div>
@@ -126,7 +125,9 @@ export default function ContactPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="text-3xl font-bold text-gray-800 mb-8">Свяжитесь с нами</h2>
+              <h2 className="text-3xl font-bold text-gray-800 mb-8">
+                {settings?.pageTitles?.contact?.contactSectionTitle || 'Свяжитесь с нами'}
+              </h2>
               
               <div className="space-y-6">
                 {/* Телефон */}
@@ -211,7 +212,9 @@ export default function ContactPage() {
               transition={{ duration: 0.8 }}
               className="bg-white rounded-xl shadow-lg p-8"
             >
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">Отправить заявку</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                {settings?.pageTitles?.contact?.formTitle || 'Отправить заявку'}
+              </h2>
               
               {isSubmitted ? (
                 <motion.div
@@ -320,9 +323,13 @@ export default function ContactPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-8"
           >
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">Как нас найти</h2>
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">
+              {settings?.pageTitles?.contact?.mapTitle || 'Как нас найти'}
+            </h2>
             <p className="text-gray-600">
-              Мы находимся по адресу: {contactInfo.address}
+              {settings?.pageTitles?.contact?.mapDescription 
+                ? settings.pageTitles.contact.mapDescription.replace('[адрес]', contactInfo.address).replace('{address}', contactInfo.address)
+                : `Мы находимся по адресу: ${contactInfo.address}`}
             </p>
           </motion.div>
 

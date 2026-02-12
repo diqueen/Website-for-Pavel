@@ -61,6 +61,11 @@ interface SiteSettings {
     contact?: {
       title: string
       subtitle: string
+      description?: string
+      contactSectionTitle?: string
+      formTitle?: string
+      mapTitle?: string
+      mapDescription?: string
     }
   }
   updatedAt?: string

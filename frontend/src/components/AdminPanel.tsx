@@ -144,6 +144,11 @@ interface SiteSettings {
     contact?: {
       title: string
       subtitle: string
+      description?: string
+      contactSectionTitle?: string
+      formTitle?: string
+      mapTitle?: string
+      mapDescription?: string
     }
   }
   updatedAt?: string
@@ -2934,10 +2939,10 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
 
                           {/* Контакты */}
                           <div className="pb-4">
-                            <h4 className="text-md font-semibold text-gray-800 mb-3">Контакты</h4>
+                            <h4 className="text-md font-semibold text-gray-800 mb-3">Настройки страницы "Контакты"</h4>
                             <div className="space-y-2">
                               <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Заголовок</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Заголовок страницы</label>
                                 <input
                                   type="text"
                                   value={siteSettings.pageTitles?.contact?.title || 'Контакты'}
@@ -2952,6 +2957,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                     }
                                   } : null)}
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Контакты"
                                 />
                               </div>
                               <div>
@@ -2968,8 +2974,104 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                       }
                                     }
                                   } : null)}
+                                  rows={2}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Краткое описание"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Описание под заголовком</label>
+                                <textarea
+                                  value={siteSettings.pageTitles?.contact?.description || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      contact: {
+                                        ...(prev.pageTitles?.contact || { title: 'Контакты', subtitle: '' }),
+                                        description: e.target.value
+                                      }
+                                    }
+                                  } : null)}
                                   rows={3}
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Свяжитесь с нами любым удобным способом. Мы всегда готовы помочь и ответить на все ваши вопросы."
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Заголовок секции контактов</label>
+                                <input
+                                  type="text"
+                                  value={siteSettings.pageTitles?.contact?.contactSectionTitle || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      contact: {
+                                        ...(prev.pageTitles?.contact || { title: 'Контакты', subtitle: '' }),
+                                        contactSectionTitle: e.target.value
+                                      }
+                                    }
+                                  } : null)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Свяжитесь с нами"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Заголовок формы</label>
+                                <input
+                                  type="text"
+                                  value={siteSettings.pageTitles?.contact?.formTitle || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      contact: {
+                                        ...(prev.pageTitles?.contact || { title: 'Контакты', subtitle: '' }),
+                                        formTitle: e.target.value
+                                      }
+                                    }
+                                  } : null)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Отправить заявку"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Заголовок карты</label>
+                                <input
+                                  type="text"
+                                  value={siteSettings.pageTitles?.contact?.mapTitle || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      contact: {
+                                        ...(prev.pageTitles?.contact || { title: 'Контакты', subtitle: '' }),
+                                        mapTitle: e.target.value
+                                      }
+                                    }
+                                  } : null)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Как нас найти"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Описание под картой</label>
+                                <textarea
+                                  value={siteSettings.pageTitles?.contact?.mapDescription || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      contact: {
+                                        ...(prev.pageTitles?.contact || { title: 'Контакты', subtitle: '' }),
+                                        mapDescription: e.target.value
+                                      }
+                                    }
+                                  } : null)}
+                                  rows={2}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Мы находимся по адресу: [адрес будет подставлен автоматически]"
                                 />
                               </div>
                             </div>
