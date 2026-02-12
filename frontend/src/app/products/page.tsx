@@ -757,7 +757,7 @@ function ProductsPage(props?: ProductsPageProps) {
                   })}
                 </div>
                 
-                <button 
+                      <button 
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                   className={`px-4 py-2 rounded-lg transition-colors ${
@@ -767,8 +767,8 @@ function ProductsPage(props?: ProductsPageProps) {
                   }`}
                 >
                   Вперед
-                </button>
-              </div>
+                      </button>
+                    </div>
             )}
             
             <div className="mt-4 text-center text-gray-600 text-sm">

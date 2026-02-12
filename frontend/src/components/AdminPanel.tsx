@@ -150,6 +150,17 @@ interface SiteSettings {
       mapTitle?: string
       mapDescription?: string
     }
+    homePageContact?: {
+      sectionTitle?: string
+      sectionDescription?: string
+      contactSectionTitle?: string
+      servicesTitle?: string
+      services?: string[]
+      mapTitle?: string
+      formTitle?: string
+      formDescription?: string
+      otherWaysTitle?: string
+    }
   }
   updatedAt?: string
 }
@@ -3072,6 +3083,184 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                                   rows={2}
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
                                   placeholder="Мы находимся по адресу: [адрес будет подставлен автоматически]"
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Настройки секции "Наши контакты" на главной странице */}
+                          <div className="border-b pb-4 mt-4">
+                            <h4 className="text-md font-semibold text-gray-800 mb-3">Секция "Наши контакты" (главная страница)</h4>
+                            <div className="space-y-2">
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Заголовок секции</label>
+                                <input
+                                  type="text"
+                                  value={siteSettings.pageTitles?.homePageContact?.sectionTitle || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      homePageContact: {
+                                        ...(prev.pageTitles?.homePageContact || {}),
+                                        sectionTitle: e.target.value
+                                      }
+                                    }
+                                  } : null)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Наши контакты"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Описание под заголовком</label>
+                                <textarea
+                                  value={siteSettings.pageTitles?.homePageContact?.sectionDescription || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      homePageContact: {
+                                        ...(prev.pageTitles?.homePageContact || {}),
+                                        sectionDescription: e.target.value
+                                      }
+                                    }
+                                  } : null)}
+                                  rows={3}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Свяжитесь с нами любым удобным способом. Наши специалисты готовы ответить на ваши вопросы и помочь с выбором оборудования."
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Заголовок "Свяжитесь с нами"</label>
+                                <input
+                                  type="text"
+                                  value={siteSettings.pageTitles?.homePageContact?.contactSectionTitle || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      homePageContact: {
+                                        ...(prev.pageTitles?.homePageContact || {}),
+                                        contactSectionTitle: e.target.value
+                                      }
+                                    }
+                                  } : null)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Свяжитесь с нами"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Заголовок "Мы предоставляем"</label>
+                                <input
+                                  type="text"
+                                  value={siteSettings.pageTitles?.homePageContact?.servicesTitle || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      homePageContact: {
+                                        ...(prev.pageTitles?.homePageContact || {}),
+                                        servicesTitle: e.target.value
+                                      }
+                                    }
+                                  } : null)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Мы предоставляем:"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Услуги (каждая услуга с новой строки)</label>
+                                <textarea
+                                  value={siteSettings.pageTitles?.homePageContact?.services?.join('\n') || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      homePageContact: {
+                                        ...(prev.pageTitles?.homePageContact || {}),
+                                        services: e.target.value.split('\n').filter(s => s.trim())
+                                      }
+                                    }
+                                  } : null)}
+                                  rows={6}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Консультации по оборудованию&#10;Техническая поддержка&#10;Проектирование решений&#10;Монтаж и настройка&#10;Обслуживание и ремонт&#10;Поставка запчастей"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Заголовок карты</label>
+                                <input
+                                  type="text"
+                                  value={siteSettings.pageTitles?.homePageContact?.mapTitle || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      homePageContact: {
+                                        ...(prev.pageTitles?.homePageContact || {}),
+                                        mapTitle: e.target.value
+                                      }
+                                    }
+                                  } : null)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Наше местоположение"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Заголовок формы</label>
+                                <input
+                                  type="text"
+                                  value={siteSettings.pageTitles?.homePageContact?.formTitle || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      homePageContact: {
+                                        ...(prev.pageTitles?.homePageContact || {}),
+                                        formTitle: e.target.value
+                                      }
+                                    }
+                                  } : null)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Нужна консультация?"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Описание под формой</label>
+                                <textarea
+                                  value={siteSettings.pageTitles?.homePageContact?.formDescription || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      homePageContact: {
+                                        ...(prev.pageTitles?.homePageContact || {}),
+                                        formDescription: e.target.value
+                                      }
+                                    }
+                                  } : null)}
+                                  rows={2}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Оставьте заявку, и наш специалист свяжется с вами в течение 30 минут"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Заголовок "Другие способы связи"</label>
+                                <input
+                                  type="text"
+                                  value={siteSettings.pageTitles?.homePageContact?.otherWaysTitle || ''}
+                                  onChange={(e) => setSiteSettings(prev => prev ? {
+                                    ...prev,
+                                    pageTitles: {
+                                      ...prev.pageTitles,
+                                      homePageContact: {
+                                        ...(prev.pageTitles?.homePageContact || {}),
+                                        otherWaysTitle: e.target.value
+                                      }
+                                    }
+                                  } : null)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                                  placeholder="Другие способы связи"
                                 />
                               </div>
                             </div>

@@ -52,34 +52,35 @@ const Contact = ({ onContactClick }: ContactProps) => {
 
   const colors = getPageColors()
 
+  // Используем данные из настроек сайта
   const contactInfo = [
     {
       icon: Phone,
       title: 'Телефон',
-      value: '+7 (999) 123-45-67',
+      value: settings.contacts?.phone || '+7 (999) 123-45-67',
       description: 'Основной номер для связи'
     },
     {
       icon: Mail,
       title: 'Email',
-      value: 'info@marine-company.ru',
+      value: settings.contacts?.email || 'info@marine-company.ru',
       description: 'Электронная почта'
     },
     {
       icon: MapPin,
       title: 'Адрес',
-      value: 'г. Москва, ул. Морская, д. 15',
+      value: settings.contacts?.address || settings.contacts?.location || 'г. Москва, ул. Морская, д. 15',
       description: 'Главный офис компании'
     },
     {
       icon: Clock,
       title: 'Режим работы',
-      value: 'Пн-Пт: 9:00 - 18:00',
+      value: settings.contacts?.workingHours || 'Пн-Пт: 9:00 - 18:00',
       description: 'Сб-Вс: 10:00 - 16:00'
     }
   ]
 
-  const services = [
+  const services = settings.pageTitles?.homePageContact?.services || [
     'Консультации по оборудованию',
     'Техническая поддержка',
     'Проектирование решений',
@@ -99,11 +100,13 @@ const Contact = ({ onContactClick }: ContactProps) => {
           viewport={{ once: true }}
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            Наши <span className={`text-${colors.primary}-600`}>контакты</span>
+            {settings.pageTitles?.homePageContact?.sectionTitle 
+              ? <>{settings.pageTitles.homePageContact.sectionTitle.split(' ').slice(0, -1).join(' ')} <span className={`text-${colors.primary}-600`}>{settings.pageTitles.homePageContact.sectionTitle.split(' ').slice(-1)[0]}</span></>
+              : <>Наши <span className={`text-${colors.primary}-600`}>контакты</span></>}
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Свяжитесь с нами любым удобным способом. Наши специалисты готовы 
-            ответить на ваши вопросы и помочь с выбором оборудования.
+            {settings.pageTitles?.homePageContact?.sectionDescription || 
+              'Свяжитесь с нами любым удобным способом. Наши специалисты готовы ответить на ваши вопросы и помочь с выбором оборудования.'}
           </p>
         </motion.div>
 
@@ -116,7 +119,7 @@ const Contact = ({ onContactClick }: ContactProps) => {
             viewport={{ once: true }}
           >
             <h3 className="text-2xl font-bold text-gray-900 mb-8">
-              Свяжитесь с нами
+              {settings.pageTitles?.homePageContact?.contactSectionTitle || 'Свяжитесь с нами'}
             </h3>
 
             <div className="space-y-6 mb-8">
@@ -150,7 +153,7 @@ const Contact = ({ onContactClick }: ContactProps) => {
             {/* Услуги */}
             <div className="bg-white rounded-xl p-6 shadow-sm">
               <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                Мы предоставляем:
+                {settings.pageTitles?.homePageContact?.servicesTitle || 'Мы предоставляем:'}
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {services.map((service, index) => (
@@ -173,7 +176,7 @@ const Contact = ({ onContactClick }: ContactProps) => {
             {/* Карта */}
             <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4">
-                Наше местоположение
+                {settings.pageTitles?.homePageContact?.mapTitle || 'Наше местоположение'}
               </h3>
               <YandexMap height="256px" />
             </div>
@@ -181,10 +184,11 @@ const Contact = ({ onContactClick }: ContactProps) => {
             {/* Быстрая форма */}
             <div className={`bg-gradient-to-br from-${colors.primary}-600 to-${colors.secondary}-600 rounded-xl p-6 text-white`}>
               <h3 className="text-xl font-bold mb-4">
-                Нужна консультация?
+                {settings.pageTitles?.homePageContact?.formTitle || 'Нужна консультация?'}
               </h3>
               <p className={`text-${colors.primary}-100 mb-6`}>
-                Оставьте заявку, и наш специалист свяжется с вами в течение 30 минут
+                {settings.pageTitles?.homePageContact?.formDescription || 
+                  'Оставьте заявку, и наш специалист свяжется с вами в течение 30 минут'}
               </p>
               
               <div className="space-y-4">
@@ -223,7 +227,7 @@ const Contact = ({ onContactClick }: ContactProps) => {
           viewport={{ once: true }}
         >
           <h3 className="text-2xl font-bold text-gray-900 mb-6">
-            Другие способы связи
+            {settings.pageTitles?.homePageContact?.otherWaysTitle || 'Другие способы связи'}
           </h3>
           <div className="flex flex-wrap justify-center gap-6">
             <button className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">

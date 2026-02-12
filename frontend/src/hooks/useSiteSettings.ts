@@ -67,6 +67,17 @@ interface SiteSettings {
       mapTitle?: string
       mapDescription?: string
     }
+    homePageContact?: {
+      sectionTitle?: string
+      sectionDescription?: string
+      contactSectionTitle?: string
+      servicesTitle?: string
+      services?: string[]
+      mapTitle?: string
+      formTitle?: string
+      formDescription?: string
+      otherWaysTitle?: string
+    }
   }
   updatedAt?: string
 }
