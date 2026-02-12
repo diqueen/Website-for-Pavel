@@ -278,7 +278,7 @@ const Products = () => {
 
         {/* Пагинация */}
         {products.length > 0 && totalPages > 1 && (
-          <div className="flex justify-center items-center space-x-2 mt-8">
+          <div className="flex justify-center items-center gap-6 mt-8">
             {loading && (
               <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -292,7 +292,7 @@ const Products = () => {
               Назад
             </button>
             
-            <div className="flex space-x-1">
+            <div className="flex gap-4">
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 const page = i + 1
                 return (

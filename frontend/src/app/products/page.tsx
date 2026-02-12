@@ -724,7 +724,7 @@ function ProductsPage(props?: ProductsPageProps) {
             
             {/* Пагинация */}
             {totalPages > 1 && (
-              <div className="mt-12 flex justify-center items-center gap-4">
+              <div className="mt-12 flex justify-center items-center gap-6">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
@@ -737,7 +737,7 @@ function ProductsPage(props?: ProductsPageProps) {
                   Назад
                 </button>
                 
-                <div className="flex gap-4">
+                <div className="flex gap-6">
                   {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
                     let pageNum: number
                     if (totalPages <= 7) {

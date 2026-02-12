@@ -178,7 +178,7 @@ const Header = () => {
                     <a 
                       href={`tel:${settings.contacts.emergencyPhone.replace(/\s/g, '')}`}
                       title="Позвонить"
-                      className="hover:underline text-xs mt-1"
+                      className="hover:underline mt-1"
                     >
                       {settings.contacts.emergencyPhone}
                     </a>

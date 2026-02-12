@@ -348,8 +348,8 @@ const convertToProducts = (analyzedRows, sheetName = '', вид = null) => {
         normalizedUnit = 'шт'
       }
       
-      // Определяем наличие товара: есть в наличии если количество > 0 И цена > 0
-      const isInStock = quantity > 0 && price > 0
+      // Определяем наличие товара: есть в наличии если количество > 0
+      const isInStock = quantity > 0
       
       // Получаем категорию и подкатегорию из строки
       // Используем категорию из Excel файла, forceCategory не перезаписывает категорию

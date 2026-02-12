@@ -1933,7 +1933,7 @@ export default function AdminPanel({ isOpen, onClose }: AdminPanelProps) {
                               <div className="bg-blue-50 p-3 rounded-md">
                                 <p className="text-sm text-blue-800">
                                   💡 <strong>Статус наличия</strong> определяется автоматически: 
-                                  товар будет "В наличии", если количество {'>'} 0 и цена {'>'} 0
+                                  товар будет "В наличии", если количество {'>'} 0
                                 </p>
                               </div>
                             </div>

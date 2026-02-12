@@ -190,10 +190,9 @@ const saveCategories = (categories) => {
 // Функция для автоматического определения статуса наличия товара
 const calculateStockStatus = (product) => {
   const quantity = parseInt(product.quantity) || 0
-  const price = parseFloat(product.price) || 0
   
-  // Товар в наличии, если количество > 0 и цена > 0
-  return quantity > 0 && price > 0
+  // Товар в наличии, если количество > 0
+  return quantity > 0
 }
 
 // Функция для обновления статуса всех товаров
